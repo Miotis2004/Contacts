@@ -27,10 +27,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = storyboard?.instantiateViewController(identifier: "DetailViewController") as? DetailViewController
+        
+        guard let currentCell = tableView.cellForRow(at: indexPath) as? MovieTableViewCell else {return}
+        let myRating = Int(currentCell.likeSlider.value * 100)
+        var isViewed: Bool = false
+        if currentCell.viewedSwitch.isOn {
+            isViewed = true
+        }else {
+            isViewed = false
+        }
+        
         vc?.image = UIImage(named: imageData[indexPath.row])!
         vc?.myTitle = myData[indexPath.row]
-        vc?.rating = "Five Stars"
-        vc?.viewed = true
+        vc?.rating = "Rating: \(myRating) fresh"
+        vc?.viewed = isViewed
         self.navigationController?.pushViewController(vc!, animated: true)
     }
     
@@ -51,8 +61,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MovieTableViewCell", for: indexPath) as! MovieTableViewCell
+        
         cell.myLabel.text = myData[indexPath.row]
         cell.myImageView.image = UIImage(named: imageData[indexPath.row])
+        
         return cell
     }
         
